@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SlovoZaSlovo
+namespace WordForWord
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -32,6 +32,8 @@ namespace SlovoZaSlovo
 
             GameLogic();
         }
+
+
 
         private void InitializeFieldOfLabels()
         {

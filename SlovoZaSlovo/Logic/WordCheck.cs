@@ -4,21 +4,33 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SlovoZaSlovo.Logic
+namespace WordForWord.Logic
 {
     class WordCheck
     {
-        List<string> strings;
+        //private List<string> strings;
+        private HashSet<string> strings;
+        private Database db = new Database();
 
         public WordCheck()
         {
-            strings = new List<string>();
-            string[] vacab = new string[] { "село", "гол", "лаг", "стог", "вол", "гот", "сел", "сало", "селова", "лесть" };
-            //string[] vacab = new string[] { "село", "сел", "селова" };
-            foreach (var item in vacab)
-            {
-                strings.Add(item);
-            }
+            strings = new HashSet<string>();
+            //string[] vacab = new string[] { "село", "гол", "лаг", "стог", "вол", "гот", "сел", "сало", "селова", "лесть" };
+            ////string[] vacab = new string[] { "село", "сел", "селова" };
+            //foreach (var item in vacab)
+            //{
+            //    strings.Add(item); // загружать словарь из файла
+            //}
+
+            //var lines = System.IO.File.ReadAllLines(@"C:\Users\max\documents\visual studio 2015\Projects\SlovoZaSlovo\SlovoZaSlovo\Res\lop2v2.txt");
+            //foreach (var line in lines)
+            //{
+            //    if (line.Length > 3)
+            //    {
+            //        strings.Add(line);
+            //    }
+                
+            //}
         }
 
         public enum SearchStatus
@@ -33,17 +45,20 @@ namespace SlovoZaSlovo.Logic
         {
             int count = 0;
             bool hasFullWord = false;
-            foreach (var word in strings)
-            {
-                if (word.StartsWith(str))
-                {
-                    count++;
-                }
-                if (word.Equals(str))
-                {
-                    hasFullWord = true;
-                }
-            }
+            count = db.GetParts(str);
+            hasFullWord = db.GetWord(str); // не очень быстро, надо автоматизировать
+
+            //foreach (var word in strings)
+            //{
+            //    if (word.StartsWith(str))
+            //    {
+            //        count++;
+            //    }
+            //    if (word.Equals(str))
+            //    {
+            //        hasFullWord = true;
+            //    }
+            //}
 
             if (hasFullWord && count == 1)
             {
