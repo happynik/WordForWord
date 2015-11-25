@@ -22,15 +22,14 @@ namespace WordForWord.Logic
             //    strings.Add(item); // загружать словарь из файла
             //}
 
-            //var lines = System.IO.File.ReadAllLines(@"C:\Users\max\documents\visual studio 2015\Projects\SlovoZaSlovo\SlovoZaSlovo\Res\lop2v2.txt");
-            //foreach (var line in lines)
-            //{
-            //    if (line.Length > 3)
-            //    {
-            //        strings.Add(line);
-            //    }
-                
-            //}
+            var lines = System.IO.File.ReadAllLines(@"c:\Users\max\Documents\Visual Studio 2015\Projects\WordForWord\WordForWord\bin\lop2v2.txt");
+            foreach (var line in lines)
+            {
+                //if (line.Length > 1)
+                {
+                    strings.Add(line);
+                }
+            }
         }
 
         public enum SearchStatus
@@ -45,20 +44,20 @@ namespace WordForWord.Logic
         {
             int count = 0;
             bool hasFullWord = false;
-            count = db.GetParts(str);
-            hasFullWord = db.GetWord(str); // не очень быстро, надо автоматизировать
+            //count = db.GetParts(str);
+            //hasFullWord = db.GetWord(str); // не очень быстро, надо автоматизировать
 
-            //foreach (var word in strings)
-            //{
-            //    if (word.StartsWith(str))
-            //    {
-            //        count++;
-            //    }
-            //    if (word.Equals(str))
-            //    {
-            //        hasFullWord = true;
-            //    }
-            //}
+            foreach (var word in strings)
+            {
+                if (word.StartsWith(str))
+                {
+                    count++;
+                }
+                if (word.Equals(str))
+                {
+                    hasFullWord = true;
+                }
+            }
 
             if (hasFullWord && count == 1)
             {

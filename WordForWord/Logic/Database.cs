@@ -14,7 +14,8 @@ namespace WordForWord.Logic
         public Database()
         {
             //SQLiteConnection.CreateFile("WordDB.sqlite");            
-            m_dbConnection = new SQLiteConnection("Data Source=WordDB.sqlite;Version=3;");
+            m_dbConnection = new SQLiteConnection(@"Data Source=WordDB.sqlite;Version=3;Pooling=True;Max Pool Size=100;Read Only=True;Cache Size=20000;");
+            //m_dbConnection = new SQLiteConnection("Data Source=:memory:;Version=3;");
             m_dbConnection.Open();
         }
 

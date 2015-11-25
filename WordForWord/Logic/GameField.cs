@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WordForWord.Logic
@@ -40,10 +41,14 @@ namespace WordForWord.Logic
         {
             for (int x = 0; x < _x; x++)
             {
+                
                 for (int y = 0; y < _y; y++)
                 {
                     _wordPath = new WordPath();
                     int status = GraphDetour(new CoOrd(x, y));
+                    //var coord = new CoOrd(x, y);
+                    //Thread t = new Thread(new ThreadStart(GraphDetour(coord));
+                    
                     //int status = GraphDetour(new CoOrd(0, 1));
 
                     //_MW.FieldUpdate(_path);
@@ -78,15 +83,15 @@ namespace WordForWord.Logic
                     _wordPath.PushLetter(new LetterInWord(level, nextStep, _field[nextStep.x][nextStep.y], allNeighborgoods));
 
                     //Console.WriteLine("Step > " + nextStep + " and word > " + _wordPath.GetWord());
-                    if (_wordCheck.ContainsWordOrPart(_wordPath.GetWord()) == WordCheck.SearchStatus.NotFound)  // нужна ограничение, если слово уже найдено. Данная проверка работает плохо...
+                    var checkStatus = _wordCheck.ContainsWordOrPart(_wordPath.GetWord());
+                    if (checkStatus == WordCheck.SearchStatus.NotFound)  // нужна ограничение, если слово уже найдено. Данная проверка работает плохо...
                     {
                         while (_wordPath.HaveNeighborhood())
                         {
                             nextStep = _wordPath.GetAndPopNeighborhood();
                         }
-                    }
-                    if (_wordCheck.ContainsWordOrPart(_wordPath.GetWord()) == WordCheck.SearchStatus.FoundAWordAndParts 
-                        || (_wordCheck.ContainsWordOrPart(_wordPath.GetWord()) == WordCheck.SearchStatus.FoundAWord))
+                    }else if (checkStatus == WordCheck.SearchStatus.FoundAWordAndParts 
+                        || (checkStatus == WordCheck.SearchStatus.FoundAWord))
                     {
                         var tempWord = _wordPath.GetWord();
                         if (!_allWords.Contains(tempWord))
