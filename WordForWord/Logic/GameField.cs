@@ -18,7 +18,7 @@ namespace WordForWord.Logic
         private int _index = 0;
 
         //private Stack<CoOrd> _path = new Stack<CoOrd>();
-        private WordPath _wordPath;// = new WordPath();
+        private WordPath _pathOfword;// = new WordPath();
         private WordCheck _wordCheck = new WordCheck();
         private List<string> _allWords = new List<string>();
 
@@ -39,17 +39,20 @@ namespace WordForWord.Logic
 
         public void ArrayDetour()
         {
+            List<Thread> thread = new List<Thread>(); ;
             for (int x = 0; x < _x; x++)
             {
                 
                 for (int y = 0; y < _y; y++)
                 {
-                    _wordPath = new WordPath();
-                    int status = GraphDetour(new CoOrd(x, y));
-                    //var coord = new CoOrd(x, y);
+                    //_wordPath = new WordPath();
+                    //GraphDetour(new CoOrd(x, y));
+                    object coord = new CoOrd(x, y);
                     //Thread t = new Thread(new ThreadStart(GraphDetour(coord));
-                    
-                    //int status = GraphDetour(new CoOrd(0, 1));
+                    thread.Add(new Thread(GraphDetour));
+                    thread.Last().Start(coord);
+
+                    //int status = GraphDetour(new CoOrd(0, 0));
 
                     //_MW.FieldUpdate(_path);
                     //return;
@@ -57,43 +60,48 @@ namespace WordForWord.Logic
             }
         }
 
-        public int GraphDetour(CoOrd charCoOrd)
-        {
-            var allNeighborgoods = GetCellNeighborhoods(charCoOrd);
-            
-            _wordPath.PushLetter(new LetterInWord(0, charCoOrd, _field[charCoOrd.x][charCoOrd.y], allNeighborgoods));
 
-            var status = _wordCheck.ContainsWordOrPart(_wordPath.GetWord());
+        public void GraphDetour(object a_charCoOrd)
+        {
+            _pathOfword = new WordPath();
+            var charCoOrd = (CoOrd)a_charCoOrd;
+            var allNeighborgoods = GetCellNeighborhoods((CoOrd)charCoOrd);
+            
+            _pathOfword.PushLetter(new LetterInWord(0, charCoOrd, _field[charCoOrd.x][charCoOrd.y], allNeighborgoods));
+            Thread.Sleep(0);
+
+            var status = _wordCheck.ContainsWordOrPart(_pathOfword.GetWord());
             if (status == WordCheck.SearchStatus.NotFound)
             {
-                return -1;
+                return;
             }
 
             var flag = true;
             int level = 0;
             while (flag)
             {
-                if (_wordPath.HaveNeighborhood())
+                if (_pathOfword.HaveNeighborhood())
                 {
-                    var nextStep = _wordPath.GetAndPopNeighborhood();
+                    _index++;
+                    var nextStep = _pathOfword.GetAndPopNeighborhood();
 
                     allNeighborgoods = GetCellNeighborhoods(nextStep);
 
                     level++;
-                    _wordPath.PushLetter(new LetterInWord(level, nextStep, _field[nextStep.x][nextStep.y], allNeighborgoods));
+                    _pathOfword.PushLetter(new LetterInWord(level, nextStep, _field[nextStep.x][nextStep.y], allNeighborgoods));
 
                     //Console.WriteLine("Step > " + nextStep + " and word > " + _wordPath.GetWord());
-                    var checkStatus = _wordCheck.ContainsWordOrPart(_wordPath.GetWord());
+                    var checkStatus = _wordCheck.ContainsWordOrPart(_pathOfword.GetWord());
                     if (checkStatus == WordCheck.SearchStatus.NotFound)  // нужна ограничение, если слово уже найдено. Данная проверка работает плохо...
                     {
-                        while (_wordPath.HaveNeighborhood())
+                        while (_pathOfword.HaveNeighborhood())
                         {
-                            nextStep = _wordPath.GetAndPopNeighborhood();
+                            nextStep = _pathOfword.GetAndPopNeighborhood();
                         }
                     }else if (checkStatus == WordCheck.SearchStatus.FoundAWordAndParts 
                         || (checkStatus == WordCheck.SearchStatus.FoundAWord))
                     {
-                        var tempWord = _wordPath.GetWord();
+                        var tempWord = _pathOfword.GetWord();
                         if (!_allWords.Contains(tempWord))
                         {
                             _allWords.Add(tempWord);
@@ -103,7 +111,7 @@ namespace WordForWord.Logic
 
                 } else
                 {
-                    _wordPath.PopLetter();
+                    _pathOfword.PopLetter();
                     level--;
                     if (level == -1)
                     {
@@ -112,7 +120,9 @@ namespace WordForWord.Logic
                 }
             }
 
-            return 1;
+            Console.WriteLine(">>> Count of iterations: " + _index);
+
+            return;
         }
 
         public List<CoOrd> GetCellNeighborhoods(CoOrd coOrd)
@@ -131,7 +141,7 @@ namespace WordForWord.Logic
                     x += i;
                     y += j;
 
-                    if (_wordPath.ContainsCoord(new CoOrd(x, y)))
+                    if (_pathOfword.ContainsCoord(new CoOrd(x, y)))
                     {
                         continue;
                     }

@@ -40,7 +40,7 @@ namespace WordForWord.Logic
 
         public bool HaveNeighborhood()
         {
-            if (_wordPath.Peek()._neighborhoods.Count > 0)
+            if (_wordPath.Peek()._neighborhoods.Count > 0) // <-- Exeption: Additional information: Stack empty.
             {
                 return true;
             }

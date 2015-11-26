@@ -10,7 +10,7 @@ namespace WordForWord.Logic
     {
         //private List<string> strings;
         private HashSet<string> strings;
-        private Database db = new Database();
+        //private Database db = new Database();
 
         public WordCheck()
         {
@@ -25,7 +25,7 @@ namespace WordForWord.Logic
             var lines = System.IO.File.ReadAllLines(@"c:\Users\max\Documents\Visual Studio 2015\Projects\WordForWord\WordForWord\bin\lop2v2.txt");
             foreach (var line in lines)
             {
-                //if (line.Length > 1)
+                if (line.Length > 1)
                 {
                     strings.Add(line);
                 }
@@ -45,18 +45,23 @@ namespace WordForWord.Logic
             int count = 0;
             bool hasFullWord = false;
             //count = db.GetParts(str);
-            //hasFullWord = db.GetWord(str); // не очень быстро, надо автоматизировать
+            //hasFullWord = db.GetWord(str);
 
             foreach (var word in strings)
             {
                 if (word.StartsWith(str))
                 {
                     count++;
+                    if (word.Equals(str))
+                    {
+                        hasFullWord = true;
+                        if (hasFullWord && count > 1)
+                        {
+                            break;
+                        }
+                    }
                 }
-                if (word.Equals(str))
-                {
-                    hasFullWord = true;
-                }
+                
             }
 
             if (hasFullWord && count == 1)
@@ -72,7 +77,7 @@ namespace WordForWord.Logic
                 return SearchStatus.FoundParts;
             }
 
-            return SearchStatus.NotFound; // есть ничего
+            return SearchStatus.NotFound;
         }
     }
 }
